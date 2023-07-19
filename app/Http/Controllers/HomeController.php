@@ -25,6 +25,6 @@ class HomeController extends Controller
     public function index()
     {
         $events = Event::all()->take(10)->toJson();
-        return view('home')->with(array('events'=>$events));
+        return view('events.datatable')->with(array('events'=>$events));
     }
 }

@@ -13,25 +13,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Auth::routes();
+
+/**
+ * Groups of routes that needs authentication to access.
+ */
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/', 'EventController@datatables')->name('events.datatables');
+    Route::get('/events', 'EventController@json');
+    Route::get('/eventsBySportId/{sportId}', 'EventController@jsonBySportId');
+
+    Route::get('/groups', 'GroupController@json');
+    Route::get('/sports', 'SportController@json');
 });
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Route::get('/events/all/datatables', 'EventController@datatables')->name('events.datatables');
-Route::get('/events', 'EventController@json');
-Route::get('/eventsBySportId/{sportId}', 'EventController@jsonBySportId');
-
-Route::get('/groups', 'GroupController@json');
-Route::get('/sports', 'SportController@json');

@@ -42,9 +42,11 @@
 
 <script>
 $(document).ready(function () {
+    var APP_URL = {!! json_encode(url('/')) !!}
+    console.log(APP_URL);
     const datatable = $('#table').DataTable({
         ajax: {
-            url: '/events',
+            url: `${APP_URL}/events`,
             dataSrc: ""
         },
         columnDefs:[
@@ -94,14 +96,15 @@ $(document).ready(function () {
 
     $('#sportSelect').change(function(){
         console.log(this.value);
-        datatable.ajax.url(`/eventsBySportId/${this.value}`).load();
+        datatable.ajax.url(`${APP_URL}/eventsBySportId/${this.value}`).load();
     });
 });
 </script>
 
 <script>
 $(document).ready(function () {
-    axios.get('/sports')
+    var APP_URL = {!! json_encode(url('/')) !!}
+    axios.get(`${APP_URL}/sports`)
         .then(function (response) {
             const data = response.data;
             const select = document.getElementById('sportSelect');
@@ -115,7 +118,8 @@ $(document).ready(function () {
 </script>
 <script>
 $(document).ready(function () {
-    axios.get('/groups')
+    var APP_URL = {!! json_encode(url('/')) !!}
+    axios.get(`${APP_URL}/groups`)
         .then(function (response) {
             const data = response.data;
             const select = document.getElementById('groupSelect');
