@@ -24,7 +24,7 @@ class SportController extends Controller
     */
     public function json()
     {
-        Sport::orderBy('name_gr')
+        $sport = Sport::orderBy('name_gr')
             ->orderBy('name_en')
             ->get()
             ->toJson();
