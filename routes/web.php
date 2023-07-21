@@ -21,9 +21,10 @@ Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', 'EventController@datatables')->name('events.datatables');
-    Route::get('/events', 'EventController@json');
-    Route::get('/eventsBySportId/{sportId}', 'EventController@jsonBySportId');
+    Route::get('/events/{sportId}', 'EventController@json');
+    // Route::get('/eventsBySportId/{sportId}', 'EventController@jsonBySportId');
 
-    Route::get('/groups', 'GroupController@json');
+    Route::get('/groups/{sportId}', 'GroupController@json');
+    Route::post('/group/{groupId}', 'GroupController@update');
     Route::get('/sports', 'SportController@json');
 });

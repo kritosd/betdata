@@ -22,25 +22,11 @@ class EventController extends Controller
     *
     * @return \Illuminate\Contracts\Support\Renderable
     */
-    public function json()
-    {
-        $events = Event::orderBy('start_date')
-            ->orderBy('league_id')
-            ->limit(100)
-            ->get()
-            ->toJson();
-        return response($events)->withHeaders([
-                'Content-Type' => 'application/json',
-                'charset' => 'UTF-8'
-            ]);
-    }
-
-    public function jsonBySportId($sportId)
+    public function json($sportId)
     {
         $events = Event::where('sports_id', '=', $sportId)
             ->orderBy('start_date')
             ->orderBy('league_id')
-            ->limit(100)
             ->get()
             ->toJson();
         return response($events)->withHeaders([

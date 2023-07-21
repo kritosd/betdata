@@ -22,16 +22,25 @@ class GroupController extends Controller
     *
     * @return \Illuminate\Contracts\Support\Renderable
     */
-    public function json()
+    public function json($sportId)
     {
         $groups = Group::where('xml_type', '=', 'General', 'and')
-            ->where('sport', '=', 17)
+            ->where('sport', '=', $sportId)
             ->get()
             ->toJson();
         return response($groups)->withHeaders([
                 'Content-Type' => 'application/json',
                 'charset' => 'UTF-8'
             ]);
+    }
+
+    public function update($sportId, Request $request)
+    {
+        $group = Group::find($sportId);
+        $group->events_list = $request->events_list;
+        $group->save();
+
+        $this->json($sportId);
     }
 
 }
