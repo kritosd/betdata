@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Sport;
-use App\Event;
 
 class SportController extends Controller
 {
@@ -25,10 +24,7 @@ class SportController extends Controller
     */
     public function json()
     {
-        $sports_from_events = Event::distinct()->get(['sports_id']);
-        
-        $sport = Sport::orderBy('name_gr')
-            ->whereIn('id', $sports_from_events)
+        Sport::orderBy('name_gr')
             ->orderBy('name_en')
             ->get()
             ->toJson();

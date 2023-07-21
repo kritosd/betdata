@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Sport extends Model
 {
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'sports_list';
+
+    /**
      * Indicates if the model should be timestamped.
      *
      * @var bool
