@@ -8,11 +8,9 @@
                 <div class="card-header">
                     <div class="input-group">
                         <select id="sportSelect" class="form-control" name="sportSelect">
-                            <option>Select</option>
                         </select>
                         <div class="btn-group col-4">
                             <select id="groupSelect" class="form-control" name="groupSelect">
-                                <option>Select</option>
                             </select>
                         </div>
                     </div>
@@ -155,8 +153,14 @@ $(document).ready(function () {
         
     } );
     
-    function getGroups(groupId) {
+    function getGroups() {
         const sportId = document.getElementById('sportSelect').value;
+        if (!sportId) {
+            setTimeout(() => {
+                getGroups();
+            }, 1000);
+            return;
+        }
         axios.get(`${APP_URL}/groups/${sportId}`)
             .then(function (response) {
                 groups = response.data;
