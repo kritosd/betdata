@@ -146,20 +146,22 @@ $(document).ready(function () {
     });
 
     datatable.on( 'xhr', function () {
-        const sportId = document.getElementById('sportSelect').value;
-        axios.get(`${APP_URL}/groups/${sportId}`)
-            .then(function (response) {
-                groups = response.data;
-                const select = document.getElementById('groupSelect');
-                select.innerHTML = "";
-                groups.forEach((option) => {
-                    select.insertAdjacentHTML('beforeend', `<option value="${option.id}">${option.name}</option>`);
-                });
+        setTimeout(() => {
+            const sportId = document.getElementById('sportSelect').value;
+            axios.get(`${APP_URL}/groups/${sportId}`)
+                .then(function (response) {
+                    groups = response.data;
+                    const select = document.getElementById('groupSelect');
+                    select.innerHTML = "";
+                    groups.forEach((option) => {
+                        select.insertAdjacentHTML('beforeend', `<option value="${option.id}">${option.name}</option>`);
+                    });
 
-                setTimeout(() => {
-                    addRemoveSelections(document.getElementById('groupSelect').value);
-                }, 500);
-            });
+                    setTimeout(() => {
+                        addRemoveSelections(document.getElementById('groupSelect').value);
+                    }, 500);
+                });
+        }, 500);
     } );
 
     function addRemoveSelections(groupId) {
