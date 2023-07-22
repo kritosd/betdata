@@ -7,11 +7,15 @@
             <div class="card">
                 <div class="card-header">
                     <div class="input-group">
-                        <select id="sportSelect" class="form-control" name="sportSelect">
+                        <select id="sportSelect" class="form-control col-4" name="sportSelect">
                         </select>
                         <div class="btn-group col-4">
                             <select id="groupSelect" class="form-control" name="groupSelect">
                             </select>
+                        </div>
+                        <div class="btn-group col-4">
+                            <button id="selectAll" type="button" class="btn btn-primary">Select All</button>
+                            <button id="unselectAll" type="button" class="btn btn-secondary">Unselect All</button>
                         </div>
                     </div>
                 </div>
@@ -241,15 +245,51 @@ $(document).ready(function () {
             // select Soccer by default
             select.value = default_Sport;
     });
-    // axios.get(`${APP_URL}/groups`)
-    //     .then(function (response) {
-    //         const data = response.data;
-    //         const select = document.getElementById('groupSelect');
-    //         select.innerHTML = "";
-    //         data.forEach((option) => {
-    //             select.insertAdjacentHTML('beforeend', `<option>${option.name}</option>`);
-    //         });
-    //     });
+
+    $('#selectAll').click(function(){
+        console.log(datatable);
+        const a = datatable.rows({ filter: 'applied' }).select();
+        console.log(a);
+        setTimeout(() => {
+            const sportId = document.getElementById('sportSelect').value;
+            const groupId = document.getElementById('groupSelect').value;
+            // const row = datatable.row( this ).data();
+            const ids = a.eq( 0 ).map((o) => {
+                return datatable.cell( o, 0 ).data();
+            }).toArray();
+            console.log(ids);
+            axios.post(`${APP_URL}/group/` + groupId, {
+                    sportId: parseInt(sportId),
+                    eventId: ids
+                })
+                .then(function (response) {
+                    groups = response.data;
+                });
+        }, 50);
+    });
+
+    $('#unselectAll').click(function(){
+        const a = datatable.rows({ filter: 'applied' }).deselect();
+        console.log(a);
+        setTimeout(() => {
+            const sportId = document.getElementById('sportSelect').value;
+            const groupId = document.getElementById('groupSelect').value;
+            // const row = datatable.row( this ).data();
+            const ids = a.eq( 0 ).map((o) => {
+                return datatable.cell( o, 0 ).data();
+            }).toArray();
+            // var element = e.currentTarget;
+            axios.delete(`${APP_URL}/group/` + groupId, {
+                data: {
+                    sportId: parseInt(sportId),
+                    eventId: ids
+                }
+            })
+            .then(function (response) {
+                groups = response.data;
+            });
+        }, 50);
+    });
 });
 </script>
 @endsection
