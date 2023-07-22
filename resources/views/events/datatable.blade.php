@@ -56,7 +56,7 @@ $(document).ready(function () {
     var APP_URL = {!! json_encode(url('/')) !!}
     const default_Sport = 17 // select Soccer as default sport 
 
-    console.log(APP_URL);
+    // console.log(APP_URL);
     const datatable = $('#table').DataTable({
         ajax: {
             url: `${APP_URL}/events/${default_Sport}`,
@@ -118,6 +118,8 @@ $(document).ready(function () {
             [].forEach.call(rows, function(row) {
               
             });
+            
+            getGroups();
         },
         pageLength: 25,
         language: {
@@ -142,35 +144,42 @@ $(document).ready(function () {
                     1: "1 επιλεγμένη εγγραφή"
                 }
             }
-        }
+        },
+        // initComplete: function(settings, json) {
+        //     // getGroups();
+        //     // alert( 'DataTables has finished its initialisation.' );
+        // }
     });
 
     datatable.on( 'xhr', function () {
-        setTimeout(() => {
-            const sportId = document.getElementById('sportSelect').value;
-            axios.get(`${APP_URL}/groups/${sportId}`)
-                .then(function (response) {
-                    groups = response.data;
-                    const select = document.getElementById('groupSelect');
-                    select.innerHTML = "";
-                    groups.forEach((option) => {
-                        select.insertAdjacentHTML('beforeend', `<option value="${option.id}">${option.name}</option>`);
-                    });
-
-                    setTimeout(() => {
-                        addRemoveSelections(document.getElementById('groupSelect').value);
-                    }, 500);
-                });
-        }, 500);
+        
     } );
+    
+    function getGroups(groupId) {
+        const sportId = document.getElementById('sportSelect').value;
+        axios.get(`${APP_URL}/groups/${sportId}`)
+            .then(function (response) {
+                groups = response.data;
+                const select = document.getElementById('groupSelect');
+                select.innerHTML = "";
+                groups.forEach((option) => {
+                    select.insertAdjacentHTML('beforeend', `<option value="${option.id}">${option.name}</option>`);
+                });
+
+                setTimeout(() => {
+                    addRemoveSelections(document.getElementById('groupSelect').value);
+                }, 500);
+            });
+    }
 
     function addRemoveSelections(groupId) {
         datatable.rows().deselect();
         const selectedGroup = groups.find(g => g.id == groupId);
-        console.log(groups);
+        if (!selectedGroup) return;
+        // console.log(groups);
         // const events_list = selectedGroup.events_list.split(',');
         const events_list = selectedGroup.events.map(e => e.id);
-        console.log(selectedGroup.events);
+        // console.log(selectedGroup.events);
         var indexes = datatable.rows().eq( 0 ).filter( function (rowIdx) {
             const a = events_list.includes(datatable.cell( rowIdx, 0 ).data()) ? true : false;
             if (a) {
@@ -185,7 +194,7 @@ $(document).ready(function () {
     });
 
     $('#groupSelect').change(function(){
-        console.log(document.getElementById('groupSelect').value);
+        // console.log(document.getElementById('groupSelect').value);
         addRemoveSelections(this.value);
     });
 
