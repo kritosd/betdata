@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Group extends Model
 {
@@ -27,6 +28,14 @@ class Group extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'xml_type', 'description', 'sport', 'league_id', 'events_list', 'visible_events', 'next_days', 'modified',
+        'name', 'xml_type', 'description', 'sport', 'league_id', 'visible_events', 'next_days', 'modified',
     ];
+
+    /**
+     * The events that belong to the group.
+     */
+    public function events(): BelongsToMany
+    {
+        return $this->belongsToMany(Event::class, 'selections_table', 'xml_id', 'event_id');
+    }
 }

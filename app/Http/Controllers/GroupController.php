@@ -26,21 +26,34 @@ class GroupController extends Controller
     {
         $groups = Group::where('xml_type', '=', 'General', 'and')
             ->where('sport', '=', $sportId)
+            ->with('events')
             ->get()
             ->toJson();
+            
         return response($groups)->withHeaders([
                 'Content-Type' => 'application/json',
                 'charset' => 'UTF-8'
             ]);
     }
 
-    public function update($sportId, Request $request)
+    public function add($groupId, Request $request)
     {
-        $group = Group::find($sportId);
-        $group->events_list = $request->events_list;
-        $group->save();
+        $sportId = $request->sportId;
+        $eventId = $request->eventId;
+        $group = Group::find($groupId);
+        $group->events()->attach($eventId);
+        
+        return $this->json($sportId);
+    }
 
-        $this->json($sportId);
+    public function delete($groupId, Request $request)
+    {
+        $sportId = $request->sportId;
+        $eventId = $request->eventId;
+        $group = Group::find($groupId);
+        $group->events()->detach($eventId);
+        
+        return $this->json($sportId);
     }
 
 }

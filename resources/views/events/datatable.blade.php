@@ -3,9 +3,20 @@
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
-                <div class="card-header">{{ __('Events') }}</div>
+                <div class="card-header">
+                    <div class="input-group">
+                        <select id="sportSelect" class="form-control" name="sportSelect">
+                            <option>Select</option>
+                        </select>
+                        <div class="btn-group col-4">
+                            <select id="groupSelect" class="form-control" name="groupSelect">
+                                <option>Select</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -13,20 +24,7 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    <div class="btn-group py-2 col-4 row">
-                        <select id="sportSelect" class="form-control" name="sportSelect">
-                            <option>Select</option>
-                        </select>
-                    </div>
-                    <div class="input-group py-2 row">
-                        <div class="btn-group col-4">
-                            <select id="groupSelect" class="form-control" name="groupSelect">
-                                <option>Select</option>
-                            </select>
-                        </div>
-                        <button id="Addbutton" class="btn btn-primary">Update List</button></p>
-                    </div>
-                    <table id="table" class="display table-bordered table-striped table-hover" style="width:100%">
+                    <table id="table" class="display table-bordered table-striped table-hover text-nowrap" style="width:100%">
                         <thead>
                             <tr>
                                 <th>Id</th>
@@ -43,7 +41,15 @@
     </div>
 </div>
 
-
+<style>
+    div.dataTables_wrapper div.dataTables_info {
+        display: flex;
+        flex-direction: column;
+    }
+    table.dataTable thead > tr > th.sorting {
+        padding: 10px;
+    }
+</style>
 <script>
 $(document).ready(function () {
     let groups = null;
@@ -58,8 +64,21 @@ $(document).ready(function () {
         },
         columnDefs:[
             {
-                target:1,
-                className:'cell-border'
+                target:[0,1,3,4],
+                className:'cell-border',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).css('padding', '10px')
+                },
+            },
+            {
+                target: 2,
+                className:'cell-border',
+                createdCell: function (td, cellData, rowData, row, col) {
+                    $(td).css('padding', '10px')
+                    $(td).css('max-width', '300px')
+                    $(td).css('overflow', 'hidden')
+                    $(td).css('text-overflow', 'ellipsis')
+                },
             }
         ],
         select: {
@@ -99,29 +118,34 @@ $(document).ready(function () {
             [].forEach.call(rows, function(row) {
               
             });
+        },
+        pageLength: 25,
+        language: {
+            search: "Αναζήτηση:",
+            lengthMenu: 'Εμφάνισε <select name="table_length" aria-controls="table" class="custom-select custom-select-sm form-control form-control-sm">' +
+            '<option value="25">25</option>' +
+            '<option value="50">50</option>' +
+            '<option value="100">100</option>' +
+            '<option value="-1">All</option>' +
+            '</select> εγγραφές',
+            paginate: {
+                first:      "Πρώτο",
+                previous:   "Προηγούμενο",
+                next:       "Επόμενο",
+                last:       "Τελευταίο"
+            },
+            info:           "Εμφάνιση _START_ εως _END_ των _TOTAL_ εγγραφών",
+            select: {
+                rows: {
+                    _: "%d επιλεγμένες εγγραφές",
+                    0: "Κάντε κλικ σε μια σειρά για να την επιλέξετε",
+                    1: "1 επιλεγμένη εγγραφή"
+                }
+            }
         }
     });
-    
-    //To pre-select the first row
-    
 
     datatable.on( 'xhr', function () {
-        // setTimeout(() => {
-        //     var json = datatable.ajax.json();
-        //     console.log('now selecting');
-        //     // Find indexes of rows which have `Yes` in the second column
-        //     console.log(json);
-        //     var indexes = datatable.rows().eq( 0 ).filter( function (rowIdx) {
-        //         return datatable.cell( rowIdx, 0 ).data() === 116513 ? true : false;
-        //     } );
-            
-        //     // Add a class to those rows using an index selector
-        //     datatable.rows( indexes )
-        //         .nodes()
-        //         .to$()
-        //         .addClass( 'selected' );
-        //     console.log('finish selecting');
-        // }, 500);
         const sportId = document.getElementById('sportSelect').value;
         axios.get(`${APP_URL}/groups/${sportId}`)
             .then(function (response) {
@@ -134,16 +158,6 @@ $(document).ready(function () {
 
                 setTimeout(() => {
                     addRemoveSelections(document.getElementById('groupSelect').value);
-                    // var json = groups;
-                    // // Find indexes of rows which have `Yes` in the second column
-                    // const events_list = json[0].events_list.split(',');
-                    // var indexes = datatable.rows().eq( 0 ).filter( function (rowIdx) {
-                    //     const a = events_list.includes(datatable.cell( rowIdx, 0 ).data().toString()) ? true : false;
-                    //     if (a) {
-                    //         datatable.rows().eq( 0 ).row(`:eq(${rowIdx})`).select();
-                    //     }
-                    //     return a;
-                    // } );
                 }, 500);
             });
     } );
@@ -152,9 +166,11 @@ $(document).ready(function () {
         datatable.rows().deselect();
         const selectedGroup = groups.find(g => g.id == groupId);
         console.log(groups);
-        const events_list = selectedGroup.events_list.split(',');
+        // const events_list = selectedGroup.events_list.split(',');
+        const events_list = selectedGroup.events.map(e => e.id);
+        console.log(selectedGroup.events);
         var indexes = datatable.rows().eq( 0 ).filter( function (rowIdx) {
-            const a = events_list.includes(datatable.cell( rowIdx, 0 ).data().toString()) ? true : false;
+            const a = events_list.includes(datatable.cell( rowIdx, 0 ).data()) ? true : false;
             if (a) {
                 datatable.rows().eq( 0 ).row(`:eq(${rowIdx})`).select();
             }
@@ -169,67 +185,36 @@ $(document).ready(function () {
     $('#groupSelect').change(function(){
         console.log(document.getElementById('groupSelect').value);
         addRemoveSelections(this.value);
-        buttonDisableCheck();
     });
 
     datatable.on('click', 'tbody tr', function (e) {
-        buttonDisableCheck();
-    });
-
-    function buttonDisableCheck() {
         setTimeout(() => {
+            const sportId = document.getElementById('sportSelect').value;
             const groupId = document.getElementById('groupSelect').value;
-            console.log(groupId);
-            const groupSelected = groups.find(g => g.id == groupId);
-            const events_list = groupSelected.events_list;
-            let new_events_list = null;
-            datatable.rows('.selected').eq( 0 ).filter( function (rowIdx) {
-                const a = datatable.rows().eq( 0 ).row(`:eq(${rowIdx})`);
-                if (new_events_list === null) {
-                    new_events_list = a.data().id;
-                } else {
-                    new_events_list = new_events_list + ',' + a.data().id;
-                }
-                return true;
-            } );
-            console.log(groupSelected);
-            console.log(events_list);
-            console.log(new_events_list);
-            if (events_list.toString() === new_events_list.toString()) {
-                console.log('Same');
-                document.querySelector('#Addbutton').disabled = true;
+            const row = datatable.row( this ).data();
+            var element = e.currentTarget;
+            if (element.classList.contains('selected')) {
+                axios.post(`${APP_URL}/group/` + groupId, {
+                    sportId: parseInt(sportId),
+                    eventId: row.id
+                })
+                .then(function (response) {
+                    groups = response.data;
+                });
             } else {
-                console.log('Not Same');
-                document.querySelector('#Addbutton').disabled = false;
+                axios.delete(`${APP_URL}/group/` + groupId, {
+                    data: {
+                        sportId: parseInt(sportId),
+                        eventId: row.id
+                    }
+                })
+                .then(function (response) {
+                    groups = response.data;
+                });
             }
         }, 50);
-    };
-
-    $('#Addbutton').click(function () {
-        // alert(datatable.rows('.selected').data().length + ' row(s) selected');
-        const groupId = document.getElementById('groupSelect').value;
-        console.log(datatable.rows('.selected').data());
-        let new_events_list = null;
-        datatable.rows('.selected').eq( 0 ).filter( function (rowIdx) {
-            const a = datatable.rows().eq( 0 ).row(`:eq(${rowIdx})`);
-            console.log(a.data().id);
-            if (new_events_list === null) {
-                new_events_list = a.data().id;
-            } else {
-                new_events_list = new_events_list + ',' + a.data().id;
-            }
-            return true;
-        } );
-            console.log(new_events_list);
-        axios.post(`${APP_URL}/group/` + groupId, {
-            events_list: new_events_list,
-        })
-        .then(function (response) {
-            groups = response.data;
-            console.log(groups);
-            buttonDisableCheck();
-        });
     });
+
     axios.get(`${APP_URL}/sports`)
         .then(function (response) {
             const data = response.data;
