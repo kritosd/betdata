@@ -121,7 +121,7 @@ $(document).ready(function () {
               
             });
             
-            getGroups();
+            // getGroups();
         },
         pageLength: 25,
         language: {
@@ -147,10 +147,10 @@ $(document).ready(function () {
                 }
             }
         },
-        // initComplete: function(settings, json) {
-        //     // getGroups();
-        //     // alert( 'DataTables has finished its initialisation.' );
-        // }
+        initComplete: function(settings, json) {
+            getGroups();
+            // alert( 'DataTables has finished its initialisation.' );
+        }
     });
 
     datatable.on( 'xhr', function () {
@@ -199,6 +199,7 @@ $(document).ready(function () {
 
     $('#sportSelect').change(function(){
         datatable.ajax.url(`${APP_URL}/events/${this.value}`).load();
+        getGroups();
     });
 
     $('#groupSelect').change(function(){
