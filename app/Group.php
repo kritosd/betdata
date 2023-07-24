@@ -36,6 +36,6 @@ class Group extends Model
      */
     public function events(): BelongsToMany
     {
-        return $this->belongsToMany(Event::class, 'selections_table', 'xml_id', 'event_id');
+        return $this->belongsToMany(Event::class, 'selections_table', 'xml_id', 'event_id')->orderBy('start_date')->orderBy('league_id')->orderBy('name');
     }
 }

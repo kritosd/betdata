@@ -27,6 +27,7 @@ class EventController extends Controller
         $events = Event::where('sports_id', '=', $sportId)
             ->orderBy('start_date')
             ->orderBy('league_id')
+            ->orderBy('name')
             ->get()
             ->toJson();
         return response($events)->withHeaders([

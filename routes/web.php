@@ -25,6 +25,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/groups/{sportId}', 'GroupController@json');
     Route::post('/group/{groupId}', 'GroupController@add');
+    Route::put('/group/{groupId}', 'GroupController@update');
     Route::delete('/group/{groupId}', 'GroupController@delete');
     Route::get('/sports', 'SportController@json');
 });

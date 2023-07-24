@@ -46,6 +46,19 @@ class GroupController extends Controller
         return $this->json($sportId);
     }
 
+    public function update($groupId, Request $request)
+    {
+        $sportId = $request->sportId;
+        $eventId = $request->eventId;
+        $group = Group::find($groupId);
+        $group->visible_events = intval($request->visible_events);
+        $group->next_days = intval($request->next_days);
+ 
+        $group->save();
+        
+        return $this->json($sportId);
+    }
+
     public function delete($groupId, Request $request)
     {
         $sportId = $request->sportId;
