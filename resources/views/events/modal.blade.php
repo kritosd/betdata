@@ -1,13 +1,13 @@
 <!-- Button trigger modal -->
 <button id='countButton' type="button" class="btn btn-primary">0</button>
-<button id="modalButton" type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#exampleModal" title="View events to be displayed"><i class="fa fa-eye"></i></button>
+<button id="modalButton" type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#exampleModal" title="View selected events"><i class="fa fa-eye"></i></button>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Records to be displayed</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Selected events</h5>
         <button id='closeModal' type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -54,7 +54,7 @@ $(document).ready(function () {
         const groupId = document.getElementById('groupSelect').value;
         const selectedGroup = window.groups.find(g => g.id == groupId) ?? [];
         window.datatable2 = $('#table2').DataTable({
-            data: selectedGroup.events.slice(0, selectedGroup.visible_events),
+            data: selectedGroup.events,
             columnDefs:[
                 {
                     target:[0,1,3,4],
