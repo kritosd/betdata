@@ -1,6 +1,6 @@
 <!-- Button trigger modal -->
 <button id='countButton' type="button" class="btn btn-primary">0</button>
-<button id="modalButton" type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-eye"></i></button>
+<button id="modalButton" type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#exampleModal" title="View events to be displayed"><i class="fa fa-eye"></i></button>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
