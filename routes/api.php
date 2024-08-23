@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::middleware('check.api.key')->group(function () {
+    Route::get('/opap_cards/get_win_info', 'ApiController@index');
+});
